@@ -84,7 +84,7 @@ fun ColumnScope.BackupsContent(
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     onClick = { viewModel.delete(context) { navController.popBackStack() } }
                 ) {
                     Text(stringResource(R.string.delete))
@@ -99,7 +99,7 @@ fun ColumnScope.BackupsContent(
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     onClick = { viewModel.migrate(context) }
                 ) {
                     Text(stringResource(R.string.migrate))

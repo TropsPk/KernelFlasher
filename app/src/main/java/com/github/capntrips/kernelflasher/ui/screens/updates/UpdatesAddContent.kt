@@ -43,7 +43,7 @@ fun ColumnScope.UpdatesAddContent(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = { viewModel.add(url) { navController.navigate("updates/view/$it") { popUpTo("updates") } } }
     ) {
         Text(stringResource(R.string.add))

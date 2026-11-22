@@ -43,7 +43,7 @@ fun ColumnScope.SlotContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = {
                     navController.navigate("slot$slotSuffix/flash")
                 }
@@ -53,7 +53,7 @@ fun ColumnScope.SlotContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = {
                     viewModel.clearFlash(context)
                     navController.navigate("slot$slotSuffix/backup")
@@ -64,7 +64,7 @@ fun ColumnScope.SlotContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = {
                     navController.navigate("slot$slotSuffix/backups")
                 }
@@ -74,7 +74,7 @@ fun ColumnScope.SlotContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = { if (!viewModel.isRefreshing.value) viewModel.getKernel(context) }
             ) {
                 Text(stringResource(R.string.check_kernel_version))
@@ -85,7 +85,7 @@ fun ColumnScope.SlotContent(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = RoundedCornerShape(14.dp),
                             onClick = { viewModel.unmountVendorDlkm(context) }
                         ) {
                             Text(stringResource(R.string.unmount_vendor_dlkm))
@@ -96,7 +96,7 @@ fun ColumnScope.SlotContent(
                             OutlinedButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 onClick = { viewModel.mountVendorDlkm(context) }
                             ) {
                                 Text(stringResource(R.string.mount_vendor_dlkm))
@@ -104,7 +104,7 @@ fun ColumnScope.SlotContent(
                             OutlinedButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 onClick = { viewModel.unmapVendorDlkm(context) }
                             ) {
                                 Text(stringResource(R.string.unmap_vendor_dlkm))
@@ -115,7 +115,7 @@ fun ColumnScope.SlotContent(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = RoundedCornerShape(14.dp),
                             onClick = { viewModel.mapVendorDlkm(context) }
                         ) {
                             Text(stringResource(R.string.map_vendor_dlkm))

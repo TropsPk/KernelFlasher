@@ -108,7 +108,7 @@ fun ColumnScope.SlotBackupsContent(
                             OutlinedButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 onClick = {
                                     navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/restore")
                                 }
@@ -119,7 +119,7 @@ fun ColumnScope.SlotBackupsContent(
                             OutlinedButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 onClick = {
                                     slotViewModel.flashAk3(context, backupsViewModel.currentBackup!!, currentBackup.filename!!)
                                     navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/flash/ak3") {
@@ -132,7 +132,7 @@ fun ColumnScope.SlotBackupsContent(
                             OutlinedButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 onClick = {
                                     slotViewModel.flashAk3_mkbootfs(context, backupsViewModel.currentBackup!!, currentBackup.filename!!)
                                     navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/flash/ak3") {
@@ -147,7 +147,7 @@ fun ColumnScope.SlotBackupsContent(
                     OutlinedButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        shape = RoundedCornerShape(4.dp),
+                        shape = RoundedCornerShape(14.dp),
                         onClick = { backupsViewModel.delete(context) { navController.popBackStack() } }
                     ) {
                         Text(stringResource(R.string.delete))
@@ -199,7 +199,7 @@ fun ColumnScope.SlotBackupsContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .alpha(if (backupsViewModel.backupPartitions[partitionName] == true) 1.0f else 0.5f),
-                        shape = RoundedCornerShape(4.dp),
+                        shape = RoundedCornerShape(14.dp),
                         colors = if (backupsViewModel.backupPartitions[partitionName] == true) ButtonDefaults.outlinedButtonColors() else disabledColor,
                         enabled = backupsViewModel.backupPartitions[partitionName] != null,
                         onClick = {
@@ -228,7 +228,7 @@ fun ColumnScope.SlotBackupsContent(
         OutlinedButton(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(14.dp),
             onClick = {
                 backupsViewModel.restore(context, slotSuffix)
                 navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/restore/restore") {
@@ -252,7 +252,7 @@ fun ColumnScope.SlotBackupsContent(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = RoundedCornerShape(14.dp),
                             onClick = { navController.navigate("reboot") }
                         ) {
                             Text(stringResource(R.string.reboot))

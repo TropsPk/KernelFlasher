@@ -1,12 +1,19 @@
-[![GitHub release](https://img.shields.io/github/release/fatalcoder524/KernelFlasher)](https://GitHub.com/fatalcoder524/KernelFlasher/releases/) 
-[![Github all releases](https://img.shields.io/github/downloads/fatalcoder524/KernelFlasher/total)](https://GitHub.com/fatalcoder524/KernelFlasher/releases/)
+# Tropsi Flasher
 
-# Kernel Flasher
-
-Kernel Flasher is an Android app to flash, backup, and restore kernels.
+Flash, back up and restore kernels on Android. Built for the Tropsi X kernel, works with any AnyKernel3 zip.
 
 ## Usage
 
-`View` a slot and choose to `Flash` an AK3 zip, `Backup` the kernel related partitions, or `Restore` a previous backup.
+Open a slot, then flash an AK3 zip, back up the kernel partitions, or restore a backup.
+You can also map or mount `vendor_dlkm`, and save `dmesg` and `logcat`.
 
-There are also options to toggle the mount and map status of `vendor_dlkm` and to save `dmesg` and `logcat`.
+## Build
+
+```
+./gradlew assembleRelease
+```
+
+## Credits
+
+Fork of [fatalcoder524/KernelFlasher](https://github.com/fatalcoder524/KernelFlasher), itself a fork of [capntrips/KernelFlasher](https://github.com/capntrips/KernelFlasher).
+Licensed under the original license (see `LICENSE`).

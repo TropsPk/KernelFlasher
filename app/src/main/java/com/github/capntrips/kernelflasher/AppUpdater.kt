@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 interface GitHubApi {
-    @GET("repos/fatalcoder524/KernelFlasher/releases/latest")
+    @GET("repos/TropsPk/KernelFlasher/releases/latest")
     suspend fun getLatestRelease(): Response<AppUpdater.GitHubRelease>
 }
 

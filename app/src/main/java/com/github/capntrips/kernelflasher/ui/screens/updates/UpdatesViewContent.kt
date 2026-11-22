@@ -59,7 +59,7 @@ fun ColumnScope.UpdatesViewContent(
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     onClick = { viewModel.downloadChangelog { navController.navigate("updates/view/${currentUpdate.id}/changelog") } }
                 ) {
                     Text(stringResource(R.string.changelog))
@@ -68,7 +68,7 @@ fun ColumnScope.UpdatesViewContent(
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     onClick = { viewModel.downloadKernel(context) }
                 ) {
                     Text(stringResource(R.string.download))
@@ -76,7 +76,7 @@ fun ColumnScope.UpdatesViewContent(
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     onClick = { viewModel.update() }
                 ) {
                     Text(stringResource(R.string.check_for_updates))
@@ -84,7 +84,7 @@ fun ColumnScope.UpdatesViewContent(
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     onClick = { viewModel.delete { navController.popBackStack() } }
                 ) {
                     Text(stringResource(R.string.delete))

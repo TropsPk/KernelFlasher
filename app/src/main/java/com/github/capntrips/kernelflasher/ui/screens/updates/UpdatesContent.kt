@@ -76,7 +76,7 @@ fun ColumnScope.UpdatesContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = { navController.navigate("updates/add") }
             ) {
                 Text(stringResource(R.string.add))

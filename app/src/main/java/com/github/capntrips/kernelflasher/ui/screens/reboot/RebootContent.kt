@@ -25,7 +25,7 @@ fun ColumnScope.RebootContent(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = { viewModel.rebootSystem() }
     ) {
         Text(stringResource(R.string.reboot))
@@ -33,7 +33,7 @@ fun ColumnScope.RebootContent(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = { viewModel.rebootRecovery() }
     ) {
         Text(stringResource(R.string.reboot_recovery))
@@ -41,7 +41,7 @@ fun ColumnScope.RebootContent(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = { viewModel.rebootBootloader() }
     ) {
         Text(stringResource(R.string.reboot_bootloader))
@@ -49,7 +49,7 @@ fun ColumnScope.RebootContent(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = { viewModel.rebootDownload() }
     ) {
         Text(stringResource(R.string.reboot_download))
@@ -57,7 +57,7 @@ fun ColumnScope.RebootContent(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = { viewModel.rebootEdl() }
     ) {
         Text(stringResource(R.string.reboot_edl))

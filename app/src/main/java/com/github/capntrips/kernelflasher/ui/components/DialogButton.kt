@@ -19,7 +19,7 @@ fun DialogButton(
 ) {
     TextButton(
         modifier = Modifier.padding(0.dp),
-        shape = RoundedCornerShape(4.0.dp),
+        shape = RoundedCornerShape(12.dp),
         contentPadding = PaddingValues(
             horizontal = ButtonDefaults.ContentPadding.calculateLeftPadding(LayoutDirection.Ltr) - (6.667).dp,
             vertical = ButtonDefaults.ContentPadding.calculateTopPadding()

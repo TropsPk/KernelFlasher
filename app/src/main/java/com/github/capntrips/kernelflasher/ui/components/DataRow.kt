@@ -13,16 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun DataRow(
     label: String,
     value: String,
-    labelColor: Color = Color.Unspecified,
+    labelColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
     valueColor: Color = Color.Unspecified,
-    valueStyle: TextStyle = MaterialTheme.typography.titleSmall,
+    valueStyle: TextStyle = MaterialTheme.typography.titleSmall.copy(
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Medium
+    ),
     mutableMaxWidth: MutableState<Int>? = null,
     clickable: Boolean = false,
 ) {

@@ -44,7 +44,7 @@ fun FlashButton(
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = {
             mainActivity.isAwaitingResult = true
             launcher.launch("*/*")

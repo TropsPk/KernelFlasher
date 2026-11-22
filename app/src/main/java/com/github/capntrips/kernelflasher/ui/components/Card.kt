@@ -15,15 +15,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-// TODO: Remove when card is supported in material3: https://m3.material.io/components/cards/implementation/android
 @Composable
 fun Card(
-    shape: Shape = RoundedCornerShape(4.dp),
+    shape: Shape = RoundedCornerShape(20.dp),
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    border: BorderStroke? = null,
-    tonalElevation: Dp = 2.dp,
-    shadowElevation: Dp = 1.dp,
+    border: BorderStroke? = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    tonalElevation: Dp = 0.dp,
+    shadowElevation: Dp = 0.dp,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Surface(
@@ -37,7 +36,7 @@ fun Card(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(18.dp, (13.788).dp, 18.dp, 18.dp),
+                .padding(20.dp, 14.dp, 20.dp, 20.dp),
             content = content
         )
     }

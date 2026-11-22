@@ -112,7 +112,7 @@ fun ColumnScope.SlotFlashContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = {
                     navController.navigate("slot$slotSuffix/flash/image")
                 }
@@ -142,7 +142,7 @@ fun ColumnScope.SlotFlashContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(if (viewModel.backupPartitions[partitionName] == true) 1.0f else 0.5f),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(14.dp),
                     colors = if (viewModel.backupPartitions[partitionName]!!) ButtonDefaults.outlinedButtonColors() else disabledColor,
                     onClick = {
                         viewModel.backupPartitions[partitionName] = !viewModel.backupPartitions[partitionName]!!
@@ -160,7 +160,7 @@ fun ColumnScope.SlotFlashContent(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(14.dp),
                 onClick = {
                     showBackupDialog = true
                 },
@@ -183,7 +183,7 @@ fun ColumnScope.SlotFlashContent(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = RoundedCornerShape(14.dp),
                             onClick = { viewModel.saveLog(context) }
                         ) {
                             Text(stringResource(R.string.save_ak3_log))
@@ -194,7 +194,7 @@ fun ColumnScope.SlotFlashContent(
                             OutlinedButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 onClick = {
                                     viewModel.backupZip(context) {
                                         navController.navigate("slot$slotSuffix/backups") {
@@ -241,7 +241,7 @@ fun ColumnScope.SlotFlashContent(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = RoundedCornerShape(14.dp),
                             onClick = { navController.popBackStack() }
                         ) {
                             Text(stringResource(R.string.back))
@@ -250,7 +250,7 @@ fun ColumnScope.SlotFlashContent(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = RoundedCornerShape(14.dp),
                             onClick = { navController.navigate("reboot") }
                         ) {
                             Text(stringResource(R.string.reboot))

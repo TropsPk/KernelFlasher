@@ -2,14 +2,12 @@ package com.github.capntrips.kernelflasher.ui.screens.main
 
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +20,7 @@ import com.github.capntrips.kernelflasher.R
 import com.github.capntrips.kernelflasher.ui.components.DataCard
 import com.github.capntrips.kernelflasher.ui.components.DataRow
 import com.github.capntrips.kernelflasher.ui.components.SlotCard
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalMaterial3Api
@@ -61,60 +60,40 @@ fun ColumnScope.MainContent(
         )
     }
     Spacer(Modifier.height(16.dp))
-    AnimatedVisibility(!viewModel.isRefreshing) {
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
-            onClick = { navController.navigate("backups") }
-        ) {
-            Text(stringResource(R.string.backups))
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        AnimatedVisibility(!viewModel.isRefreshing) {
+            TropsiButton(
+                text = stringResource(R.string.backups),
+                emphasized = true,
+                onClick = { navController.navigate("backups") }
+            )
         }
-    }
-    AnimatedVisibility(!viewModel.isRefreshing) {
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
-            onClick = { navController.navigate("updates") }
-        ) {
-            Text(stringResource(R.string.updates))
+        AnimatedVisibility(!viewModel.isRefreshing) {
+            TropsiButton(
+                text = stringResource(R.string.updates),
+                emphasized = true,
+                onClick = { navController.navigate("updates") }
+            )
         }
-    }
-    if (viewModel.hasRamoops) {
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
-            onClick = { viewModel.saveRamoops(context) }
-        ) {
-            Text(stringResource(R.string.save_ramoops))
+        if (viewModel.hasRamoops) {
+            TropsiButton(
+                text = stringResource(R.string.save_ramoops),
+                onClick = { viewModel.saveRamoops(context) }
+            )
         }
-    }
-    OutlinedButton(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
-        onClick = { viewModel.saveDmesg(context) }
-    ) {
-        Text(stringResource(R.string.save_dmesg))
-    }
-    OutlinedButton(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
-        onClick = { viewModel.saveLogcat(context) }
-    ) {
-        Text(stringResource(R.string.save_logcat))
-    }
-    AnimatedVisibility(!viewModel.isRefreshing) {
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
-            onClick = { navController.navigate("reboot") }
-        ) {
-            Text(stringResource(R.string.reboot))
+        TropsiButton(
+            text = stringResource(R.string.save_dmesg),
+            onClick = { viewModel.saveDmesg(context) }
+        )
+        TropsiButton(
+            text = stringResource(R.string.save_logcat),
+            onClick = { viewModel.saveLogcat(context) }
+        )
+        AnimatedVisibility(!viewModel.isRefreshing) {
+            TropsiButton(
+                text = stringResource(R.string.reboot),
+                onClick = { navController.navigate("reboot") }
+            )
         }
     }
 }
