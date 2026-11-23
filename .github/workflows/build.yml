@@ -28,9 +28,23 @@ jobs:
           ./gradlew assembleRelease
           tree app/build/outputs/apk/release
 
+      - name: Check signing secrets
+        id: chk
+        env:
+          KS: ${{ secrets.KEYSTORE }}
+          KS_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KS" ] && [ -n "$KS_ALIAS" ] && [ -n "$KS_PASS" ]; then
+            echo "has=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Signing secrets missing; signing with a throwaway key"
+          fi
+
       - uses: r0adkll/sign-android-release@v1.0.4
         name: Sign app APK
-        if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: steps.chk.outputs.has == 'true' && (github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         id: sign_app
         with:
           releaseDirectory: app/build/outputs/apk/release
@@ -41,12 +55,31 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "35.0.0"
 
+      - name: Sign app APK (fallback key)
+        if: steps.chk.outputs.has != 'true'
+        id: sign_fallback
+        run: |
+          cd app/build/outputs/apk/release
+          keytool -genkeypair -keystore fallback.jks -storetype PKCS12 \
+            -alias fallback -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass fallback123 -keypass fallback123 \
+            -dname "CN=Tropsi, O=TropsPk, C=PK"
+          APKSIGNER=$(ls /usr/local/lib/android/sdk/build-tools/*/apksigner | sort -V | tail -1)
+          ZIPALIGN=$(ls /usr/local/lib/android/sdk/build-tools/*/zipalign | sort -V | tail -1)
+          "$ZIPALIGN" -f -p 4 app-release-unsigned.apk aligned.apk
+          "$APKSIGNER" sign --ks fallback.jks --ks-key-alias fallback \
+            --ks-pass pass:fallback123 --key-pass pass:fallback123 \
+            --out app-release-signed.apk aligned.apk
+          "$APKSIGNER" verify app-release-signed.apk
+          echo "signedReleaseFile=$PWD/app-release-signed.apk" >> "$GITHUB_OUTPUT"
+
       - name: Rename APK
         if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           ls -al app/build/outputs/apk/release
-          echo "Signed APK: ${{steps.sign_app.outputs.signedReleaseFile}}"
-          cp ${{steps.sign_app.outputs.signedReleaseFile}} KernelFlasher_${{ github.run_number }}.apk
+          SIGNED="${{ steps.sign_app.outputs.signedReleaseFile || steps.sign_fallback.outputs.signedReleaseFile }}"
+          echo "Signed APK: $SIGNED"
+          cp "$SIGNED" KernelFlasher_${{ github.run_number }}.apk
 
       - name: Rename APK
         if: github.repository != github.event.pull_request.head.repo.full_name && github.event_name == 'pull_request'
