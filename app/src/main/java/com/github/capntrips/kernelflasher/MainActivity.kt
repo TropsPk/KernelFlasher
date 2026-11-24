@@ -253,10 +253,7 @@ class MainActivity : ComponentActivity() {
             copyNativeBinary("magiskboot") // v29.0
             copyNativeBinary("bootctl") // aosp_arm64-img-13613025 android14
             copyNativeBinary("busybox") // BusyBox v1.36.1.1
-            copyAsset("mkbootfs")
-            copyAsset("ksuinit")
             copyAsset("flash_ak3.sh")
-            copyAsset("flash_ak3_mkbootfs.sh")
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
             setContent {

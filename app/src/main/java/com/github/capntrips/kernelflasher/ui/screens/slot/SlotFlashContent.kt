@@ -99,16 +99,6 @@ fun ColumnScope.SlotFlashContent(
                 viewModel.flashActionURI = uri
                 viewModel.showConfirmDialog()
             })
-            FlashButton(stringResource(R.string.flash_ak3_zip_mkbootfs), "zip" ,callback = { uri ->
-                viewModel.flashActionType = "flashAk3_mkbootfs"
-                viewModel.flashActionURI = uri
-                viewModel.showConfirmDialog()
-            })
-            FlashButton(stringResource(R.string.flash_ksu_lkm), "ko" ,callback = { uri ->
-                viewModel.flashActionType = "flashKsuDriver"
-                viewModel.flashActionURI = uri
-                viewModel.showConfirmDialog()
-            })
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -288,7 +278,7 @@ fun ColumnScope.SlotFlashContent(
                     
                     if (viewModel.flashActionType == "flashImage" && viewModel.flashActionPartName != null) {
                         Text("Destination Partition: ${viewModel.flashActionPartName}", fontWeight = FontWeight.Bold)
-                    } else if (viewModel.flashActionType == "flashAk3" || viewModel.flashActionType == "flashAk3_mkbootfs") {
+                    } else if (viewModel.flashActionType == "flashAk3") {
                         Text("Destination: AnyKernel3 (Auto-detect)", fontWeight = FontWeight.Bold)
                     }
                 }
@@ -313,20 +303,6 @@ fun ColumnScope.SlotFlashContent(
                                     popUpTo("slot$slotSuffix")
                                 }
                                 viewModel.flashAk3(context, uri)
-                            }
-
-                            "flashAk3_mkbootfs" -> {
-                                navController.navigate("slot$slotSuffix/flash/ak3") {
-                                    popUpTo("slot$slotSuffix")
-                                }
-                                viewModel.flashAk3_mkbootfs(context, uri)
-                            }
-
-                            "flashKsuDriver" -> {
-                                navController.navigate("slot$slotSuffix/flash/image/flash") {
-                                    popUpTo("slot$slotSuffix")
-                                }
-                                viewModel.flashKsuDriver(context, uri)
                             }
 
                             "flashImage" -> {
