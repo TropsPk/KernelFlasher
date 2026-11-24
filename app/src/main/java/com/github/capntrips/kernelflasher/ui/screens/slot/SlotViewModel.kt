@@ -716,6 +716,72 @@ class SlotViewModel(
     }
 
     @OptIn(ExperimentalSerializationApi::class)
+    fun flashRecoveryZip(context: Context, uri: Uri) {
+        launch {
+            _clearFlash()
+            addMessage("Copying zip ...")
+            _copyFile(context, uri)
+            if (!isActive) {
+                resetSlot()
+            }
+            val zip = File(context.filesDir, flashFilename!!)
+            val extracted = File(context.filesDir, "recovery_extracted.img")
+            try {
+                if (!zip.exists()) {
+                    throw Exception("Recovery zip is missing")
+                }
+                _wasFlashSuccess.value = false
+                addMessage("Extracting recovery.img ...")
+                ZipFile(zip).use { z ->
+                    val entry = z.getEntry("recovery.img")
+                        ?: z.entries().asSequence().firstOrNull {
+                            !it.isDirectory && it.name.substringAfterLast('/') == "recovery.img"
+                        }
+                        ?: throw Exception("recovery.img not found in zip")
+                    z.getInputStream(entry).use { input ->
+                        extracted.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+                val header = ByteArray(8)
+                val headerRead = extracted.inputStream().use { it.read(header) }
+                if (headerRead != 8 || String(header, Charsets.US_ASCII) != "ANDROID!") {
+                    throw Exception("recovery.img is not a valid Android boot image")
+                }
+                val image = fileSystemManager.getFile(context.filesDir, extracted.name)
+                addMessage("Flashing recovery.img to recovery$slotSuffix ...")
+                val blockDevice = PartitionUtil.findPartitionBlockDevice(context, "recovery", slotSuffix)
+                if (blockDevice != null && blockDevice.exists()) {
+                    PartitionUtil.flashBlockDevice(image, blockDevice, hashAlgorithm)
+                } else {
+                    throw Exception("Partition recovery$slotSuffix was not found")
+                }
+                addMessage("Flashed recovery.img to recovery$slotSuffix")
+                addMessage("Cleaning up ...")
+                clearTmp(context)
+                addMessage("Done.")
+                _wasFlashSuccess.value = true
+            } catch (e: Exception) {
+                clearFlash(context)
+                throw e
+            } finally {
+                if (extracted.exists()) {
+                    extracted.delete()
+                }
+                addMessage("")
+                if (wasSlotReset) {
+                    resetSlot()
+                    viewModelScope.launch(Dispatchers.Main) {
+                        showCautionDialog()
+                    }
+                }
+                SharedViewModels.mainViewModel.markRefreshNeeded()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
     fun flashImage(context: Context, uri: Uri, partitionName: String) {
         launch {
             _clearFlash()

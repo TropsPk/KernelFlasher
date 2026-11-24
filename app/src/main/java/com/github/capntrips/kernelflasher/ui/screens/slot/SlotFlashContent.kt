@@ -99,6 +99,19 @@ fun ColumnScope.SlotFlashContent(
                 viewModel.flashActionURI = uri
                 viewModel.showConfirmDialog()
             })
+            if (PartitionUtil.AvailablePartitions.contains("recovery")) {
+                FlashButton(stringResource(R.string.flash_recovery_img), "img" ,callback = { uri ->
+                    viewModel.flashActionType = "flashImage"
+                    viewModel.flashActionPartName = "recovery"
+                    viewModel.flashActionURI = uri
+                    viewModel.showConfirmDialog()
+                })
+                FlashButton(stringResource(R.string.flash_recovery_zip), "zip" ,callback = { uri ->
+                    viewModel.flashActionType = "flashRecoveryZip"
+                    viewModel.flashActionURI = uri
+                    viewModel.showConfirmDialog()
+                })
+            }
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -280,6 +293,8 @@ fun ColumnScope.SlotFlashContent(
                         Text("Destination Partition: ${viewModel.flashActionPartName}", fontWeight = FontWeight.Bold)
                     } else if (viewModel.flashActionType == "flashAk3") {
                         Text("Destination: AnyKernel3 (Auto-detect)", fontWeight = FontWeight.Bold)
+                    } else if (viewModel.flashActionType == "flashRecoveryZip") {
+                        Text("Destination Partition: recovery (recovery.img from zip)", fontWeight = FontWeight.Bold)
                     }
                 }
             },
@@ -303,6 +318,13 @@ fun ColumnScope.SlotFlashContent(
                                     popUpTo("slot$slotSuffix")
                                 }
                                 viewModel.flashAk3(context, uri)
+                            }
+
+                            "flashRecoveryZip" -> {
+                                navController.navigate("slot$slotSuffix/flash/image/flash") {
+                                    popUpTo("slot$slotSuffix")
+                                }
+                                viewModel.flashRecoveryZip(context, uri)
                             }
 
                             "flashImage" -> {
