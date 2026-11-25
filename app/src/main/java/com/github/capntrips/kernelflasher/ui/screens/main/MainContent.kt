@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.main
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.ColumnScope
@@ -21,6 +25,7 @@ import androidx.navigation.NavController
 import com.github.capntrips.kernelflasher.R
 import com.github.capntrips.kernelflasher.ui.components.DataCard
 import com.github.capntrips.kernelflasher.ui.components.DataRow
+import com.github.capntrips.kernelflasher.ui.components.HeroCard
 import com.github.capntrips.kernelflasher.ui.components.SlotCard
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -32,6 +37,8 @@ fun ColumnScope.MainContent(
     navController: NavController
 ) {
     val context = LocalContext.current
+    HeroCard()
+    Spacer(Modifier.height(16.dp))
     DataCard (title = stringResource(R.string.device)) {
         val cardWidth = remember { mutableIntStateOf(0) }
         DataRow(stringResource(R.string.model), "${Build.MODEL} (${Build.DEVICE})", mutableMaxWidth = cardWidth)
@@ -62,56 +69,56 @@ fun ColumnScope.MainContent(
     }
     Spacer(Modifier.height(16.dp))
     AnimatedVisibility(!viewModel.isRefreshing) {
-        OutlinedButton(
+        TropsiButton(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
+            shape = TropsiShape,
             onClick = { navController.navigate("backups") }
         ) {
             Text(stringResource(R.string.backups))
         }
     }
     AnimatedVisibility(!viewModel.isRefreshing) {
-        OutlinedButton(
+        TropsiButton(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
+            shape = TropsiShape,
             onClick = { navController.navigate("updates") }
         ) {
             Text(stringResource(R.string.updates))
         }
     }
     if (viewModel.hasRamoops) {
-        OutlinedButton(
+        TropsiButton(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
+            shape = TropsiShape,
             onClick = { viewModel.saveRamoops(context) }
         ) {
             Text(stringResource(R.string.save_ramoops))
         }
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.saveDmesg(context) }
     ) {
         Text(stringResource(R.string.save_dmesg))
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.saveLogcat(context) }
     ) {
         Text(stringResource(R.string.save_logcat))
     }
     AnimatedVisibility(!viewModel.isRefreshing) {
-        OutlinedButton(
+        TropsiButton(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
+            shape = TropsiShape,
             onClick = { navController.navigate("reboot") }
         ) {
             Text(stringResource(R.string.reboot))

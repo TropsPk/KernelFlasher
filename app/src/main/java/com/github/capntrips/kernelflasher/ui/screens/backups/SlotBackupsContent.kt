@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.backups
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -105,10 +109,10 @@ fun ColumnScope.SlotBackupsContent(
                     Spacer(Modifier.height(5.dp))
                     if (slotViewModel.isActive) {
                         if (currentBackup.type == "raw") {
-                            OutlinedButton(
+                            TropsiButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = TropsiShape,
                                 onClick = {
                                     navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/restore")
                                 }
@@ -116,10 +120,10 @@ fun ColumnScope.SlotBackupsContent(
                                 Text(stringResource(R.string.restore))
                             }
                         } else if (currentBackup.type == "ak3") {
-                            OutlinedButton(
+                            TropsiButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = TropsiShape,
                                 onClick = {
                                     slotViewModel.flashAk3(context, backupsViewModel.currentBackup!!, currentBackup.filename!!)
                                     navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/flash/ak3") {
@@ -131,10 +135,10 @@ fun ColumnScope.SlotBackupsContent(
                             }
                         }
                     }
-                    OutlinedButton(
+                    TropsiButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        shape = RoundedCornerShape(4.dp),
+                        shape = TropsiShape,
                         onClick = { backupsViewModel.delete(context) { navController.popBackStack() } }
                     ) {
                         Text(stringResource(R.string.delete))
@@ -182,11 +186,11 @@ fun ColumnScope.SlotBackupsContent(
             for (partitionName in PartitionUtil.PartitionNames) {
                 val hash = currentBackup.hashes[partitionName]
                 if (hash != null) {
-                    OutlinedButton(
+                    TropsiButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .alpha(if (backupsViewModel.backupPartitions[partitionName] == true) 1.0f else 0.5f),
-                        shape = RoundedCornerShape(4.dp),
+                        shape = TropsiShape,
                         colors = if (backupsViewModel.backupPartitions[partitionName] == true) ButtonDefaults.outlinedButtonColors() else disabledColor,
                         enabled = backupsViewModel.backupPartitions[partitionName] != null,
                         onClick = {
@@ -212,10 +216,10 @@ fun ColumnScope.SlotBackupsContent(
             )
             Spacer(Modifier.height(5.dp))
         }
-        OutlinedButton(
+        TropsiButton(
             modifier = Modifier
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(4.dp),
+            shape = TropsiShape,
             onClick = {
                 backupsViewModel.restore(context, slotSuffix)
                 navController.navigate("slot$slotSuffix/backups/${backupsViewModel.currentBackup!!}/restore/restore") {
@@ -236,10 +240,10 @@ fun ColumnScope.SlotBackupsContent(
             AnimatedVisibility(!backupsViewModel.isRefreshing && backupsViewModel.wasRestored != null) {
                 Column {
                     if (backupsViewModel.wasRestored != false) {
-                        OutlinedButton(
+                        TropsiButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = TropsiShape,
                             onClick = { navController.navigate("reboot") }
                         ) {
                             Text(stringResource(R.string.reboot))

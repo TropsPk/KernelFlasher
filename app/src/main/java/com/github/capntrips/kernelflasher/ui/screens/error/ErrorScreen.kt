@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.capntrips.kernelflasher.ui.theme.Orange500
 
 @ExperimentalMaterial3Api
 @Composable
@@ -36,7 +35,7 @@ fun ErrorScreen(message: String) {
                     modifier = Modifier
                         .width(48.dp)
                         .height(48.dp),
-                    tint = Orange500,
+                    tint = MaterialTheme.colorScheme.primary,
                     contentDescription = message
                 )
                 Spacer(Modifier.height(8.dp))

@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.updates
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -56,35 +60,35 @@ fun ColumnScope.UpdatesViewContent(
         AnimatedVisibility(!viewModel.isRefreshing) {
             Column {
                 Spacer(Modifier.height(5.dp))
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     onClick = { viewModel.downloadChangelog { navController.navigate("updates/view/${currentUpdate.id}/changelog") } }
                 ) {
                     Text(stringResource(R.string.changelog))
                 }
                 // TODO: add download progress indicator
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     onClick = { viewModel.downloadKernel(context) }
                 ) {
                     Text(stringResource(R.string.download))
                 }
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     onClick = { viewModel.update() }
                 ) {
                     Text(stringResource(R.string.check_for_updates))
                 }
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     onClick = { viewModel.delete { navController.popBackStack() } }
                 ) {
                     Text(stringResource(R.string.delete))

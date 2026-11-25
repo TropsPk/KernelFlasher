@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.slot
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import android.provider.OpenableColumns
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -112,10 +116,10 @@ fun ColumnScope.SlotFlashContent(
                     viewModel.showConfirmDialog()
                 })
             }
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = {
                     navController.navigate("slot$slotSuffix/flash/image")
                 }
@@ -141,11 +145,11 @@ fun ColumnScope.SlotFlashContent(
                 MaterialTheme.colorScheme.onSurface
             )
             for (partitionName in PartitionUtil.AvailablePartitions) {
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(if (viewModel.backupPartitions[partitionName] == true) 1.0f else 0.5f),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     colors = if (viewModel.backupPartitions[partitionName]!!) ButtonDefaults.outlinedButtonColors() else disabledColor,
                     onClick = {
                         viewModel.backupPartitions[partitionName] = !viewModel.backupPartitions[partitionName]!!
@@ -160,10 +164,10 @@ fun ColumnScope.SlotFlashContent(
                     }
                 }
             }
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = {
                     showBackupDialog = true
                 },
@@ -183,10 +187,10 @@ fun ColumnScope.SlotFlashContent(
             AnimatedVisibility(!viewModel.isRefreshing.value && viewModel.wasFlashSuccess.value != null) {
                 Column {
                     if (isAk3) {
-                        OutlinedButton(
+                        TropsiButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = TropsiShape,
                             onClick = { viewModel.saveLog(context) }
                         ) {
                             Text(stringResource(R.string.save_ak3_log))
@@ -194,10 +198,10 @@ fun ColumnScope.SlotFlashContent(
                     }
                     if (isAk3) {
                         AnimatedVisibility(!currentRoute.endsWith("/backups/{backupId}/flash/ak3") && viewModel.wasFlashSuccess.value != false) {
-                            OutlinedButton(
+                            TropsiButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = TropsiShape,
                                 onClick = {
                                     viewModel.backupZip(context) {
                                         navController.navigate("slot$slotSuffix/backups") {
@@ -241,19 +245,19 @@ fun ColumnScope.SlotFlashContent(
 						)
 					}
                     if (viewModel.wasFlashSuccess.value != false && isBackupResult) {
-                        OutlinedButton(
+                        TropsiButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = TropsiShape,
                             onClick = { navController.popBackStack() }
                         ) {
                             Text(stringResource(R.string.back))
                         }
                     } else {
-                        OutlinedButton(
+                        TropsiButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = TropsiShape,
                             onClick = { navController.navigate("reboot") }
                         ) {
                             Text(stringResource(R.string.reboot))

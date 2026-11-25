@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.slot
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
@@ -40,20 +44,20 @@ fun ColumnScope.SlotContent(
     AnimatedVisibility(!viewModel.isRefreshing.value) {
         Column {
             Spacer(Modifier.height(5.dp))
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = {
                     navController.navigate("slot$slotSuffix/flash")
                 }
             ) {
                 Text(stringResource(R.string.flash))
             }
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = {
                     viewModel.clearFlash(context)
                     navController.navigate("slot$slotSuffix/backup")
@@ -61,20 +65,20 @@ fun ColumnScope.SlotContent(
             ) {
                 Text(stringResource(R.string.backup))
             }
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = {
                     navController.navigate("slot$slotSuffix/backups")
                 }
             ) {
                 Text(stringResource(R.string.restore))
             }
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = { if (!viewModel.isRefreshing.value) viewModel.getKernel(context) }
             ) {
                 Text(stringResource(R.string.check_kernel_version))
@@ -82,10 +86,10 @@ fun ColumnScope.SlotContent(
             if (viewModel.hasVendorDlkm) {
                 AnimatedVisibility(!viewModel.isRefreshing.value) {
                     AnimatedVisibility(viewModel.isVendorDlkmMounted) {
-                        OutlinedButton(
+                        TropsiButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = TropsiShape,
                             onClick = { viewModel.unmountVendorDlkm(context) }
                         ) {
                             Text(stringResource(R.string.unmount_vendor_dlkm))
@@ -93,18 +97,18 @@ fun ColumnScope.SlotContent(
                     }
                     AnimatedVisibility(!viewModel.isVendorDlkmMounted && viewModel.isVendorDlkmMapped) {
                         Column {
-                            OutlinedButton(
+                            TropsiButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = TropsiShape,
                                 onClick = { viewModel.mountVendorDlkm(context) }
                             ) {
                                 Text(stringResource(R.string.mount_vendor_dlkm))
                             }
-                            OutlinedButton(
+                            TropsiButton(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
+                                shape = TropsiShape,
                                 onClick = { viewModel.unmapVendorDlkm(context) }
                             ) {
                                 Text(stringResource(R.string.unmap_vendor_dlkm))
@@ -112,10 +116,10 @@ fun ColumnScope.SlotContent(
                         }
                     }
                     AnimatedVisibility(!viewModel.isVendorDlkmMounted && !viewModel.isVendorDlkmMapped) {
-                        OutlinedButton(
+                        TropsiButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
+                            shape = TropsiShape,
                             onClick = { viewModel.mapVendorDlkm(context) }
                         ) {
                             Text(stringResource(R.string.map_vendor_dlkm))

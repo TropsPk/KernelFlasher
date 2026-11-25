@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.reboot
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import android.os.Build
 import android.os.PowerManager
 import androidx.compose.foundation.layout.ColumnScope
@@ -22,42 +26,42 @@ fun ColumnScope.RebootContent(
     @Suppress("UNUSED_PARAMETER") ignoredNavController: NavController
 ) {
     val context = LocalContext.current
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.rebootSystem() }
     ) {
         Text(stringResource(R.string.reboot))
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.rebootRecovery() }
     ) {
         Text(stringResource(R.string.reboot_recovery))
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.rebootBootloader() }
     ) {
         Text(stringResource(R.string.reboot_bootloader))
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.rebootDownload() }
     ) {
         Text(stringResource(R.string.reboot_download))
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.rebootEdl() }
     ) {
         Text(stringResource(R.string.reboot_edl))

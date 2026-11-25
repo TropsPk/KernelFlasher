@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun DataRow(
     label: String,
     value: String,
-    labelColor: Color = Color.Unspecified,
+    labelColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
     valueColor: Color = Color.Unspecified,
     valueStyle: TextStyle = MaterialTheme.typography.titleSmall,

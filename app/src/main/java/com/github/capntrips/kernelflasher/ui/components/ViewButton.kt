@@ -1,5 +1,7 @@
 package com.github.capntrips.kernelflasher.ui.components
 
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +21,7 @@ fun ViewButton(
 ) {
     TextButton(
         modifier = Modifier.padding(0.dp),
-        shape = RoundedCornerShape(4.0.dp),
+        shape = TropsiShape,
         contentPadding = PaddingValues(
             horizontal = ButtonDefaults.ContentPadding.calculateLeftPadding(LayoutDirection.Ltr) - (6.667).dp,
             vertical = ButtonDefaults.ContentPadding.calculateTopPadding()

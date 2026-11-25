@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.updates
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -73,10 +77,10 @@ fun ColumnScope.UpdatesContent(
     AnimatedVisibility(!viewModel.isRefreshing) {
         Column {
             Spacer(Modifier.height(12.dp))
-            OutlinedButton(
+            TropsiButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
+                shape = TropsiShape,
                 onClick = { navController.navigate("updates/add") }
             ) {
                 Text(stringResource(R.string.add))

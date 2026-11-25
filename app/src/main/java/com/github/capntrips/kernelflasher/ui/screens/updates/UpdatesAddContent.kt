@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.updates
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,10 +44,10 @@ fun ColumnScope.UpdatesAddContent(
             .fillMaxWidth()
     )
     Spacer(Modifier.height(5.dp))
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = { viewModel.add(url) { navController.navigate("updates/view/$it") { popUpTo("updates") } } }
     ) {
         Text(stringResource(R.string.add))

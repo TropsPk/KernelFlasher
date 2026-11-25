@@ -1,5 +1,7 @@
 package com.github.capntrips.kernelflasher.ui.components
 
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
@@ -41,10 +43,10 @@ fun FlashButton(
             mainActivity.isAwaitingResult = false
         }
     }
-    OutlinedButton(
+    TropsiButton(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = TropsiShape,
         onClick = {
             mainActivity.isAwaitingResult = true
             launcher.launch("*/*")

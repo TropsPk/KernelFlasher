@@ -1,5 +1,9 @@
 package com.github.capntrips.kernelflasher.ui.screens.backups
 
+import com.github.capntrips.kernelflasher.ui.components.TropsiButton
+
+import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -81,10 +85,10 @@ fun ColumnScope.BackupsContent(
         AnimatedVisibility(!viewModel.isRefreshing) {
             Column {
                 Spacer(Modifier.height(5.dp))
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     onClick = { viewModel.delete(context) { navController.popBackStack() } }
                 ) {
                     Text(stringResource(R.string.delete))
@@ -96,10 +100,10 @@ fun ColumnScope.BackupsContent(
         AnimatedVisibility(viewModel.needsMigration) {
             Column {
                 Spacer(Modifier.height(5.dp))
-                OutlinedButton(
+                TropsiButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(4.dp),
+                    shape = TropsiShape,
                     onClick = { viewModel.migrate(context) }
                 ) {
                     Text(stringResource(R.string.migrate))

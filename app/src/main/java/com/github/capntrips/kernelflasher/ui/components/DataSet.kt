@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DataSet(
     label: String,
-    labelColor: Color = Color.Unspecified,
+    labelColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     labelStyle: TextStyle = MaterialTheme.typography.labelMedium,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
