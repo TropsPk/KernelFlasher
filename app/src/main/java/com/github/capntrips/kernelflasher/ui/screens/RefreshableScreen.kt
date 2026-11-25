@@ -88,6 +88,7 @@ fun RefreshableScreen(
     ) {
     Scaffold(
         containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             Box(
                 Modifier

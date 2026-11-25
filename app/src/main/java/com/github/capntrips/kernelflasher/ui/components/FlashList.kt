@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,6 +70,7 @@ fun ColumnScope.FlashList(
     ) {
         items(output) { message ->
             Text(message,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = LocalTextStyle.current.copy(
                     fontFamily = FontFamily.Monospace,
                     fontSize = TextUnit(12.0f, TextUnitType.Sp),
