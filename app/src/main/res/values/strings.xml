@@ -1,6 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Tropsi Flasher</string>
-    <string name="tagline" translatable="false">Where Stability Meets Speed</string>
+    <string name="developer_name" translatable="false">TropsPk</string>
+    <string name="support" translatable="false">Support Me</string>
+    <string name="support_subtitle" translatable="false">If you like what I build, you can support me</string>
+    <string name="support_donation" translatable="false">Donation</string>
+    <string name="support_usdt" translatable="false">USDT (TRC20)</string>
+    <string name="support_trc20_note" translatable="false">TRC20 network only</string>
+    <string name="support_copy_address" translatable="false">Copy address</string>
+    <string name="support_copied" translatable="false">Address copied</string>
+    <string name="support_github" translatable="false">GitHub</string>
+    <string name="support_open_github" translatable="false">Open GitHub</string>
+    <string name="support_no_browser" translatable="false">No app found to open the link</string>
+    <string name="support_close" translatable="false">Close</string>
+    <string name="donation_address" translatable="false">TTL3HHUeyfDTXZ5RFqDr4Q379f8DXUJtjb</string>
+    <string name="github_url" translatable="false">https://github.com/TropsPk</string>
     <string name="root_required">Root is required</string>
     <string name="root_service_disconnected">Root service disconnected</string>
     <string name="device">Device</string>
