@@ -99,11 +99,23 @@ fun ColumnScope.SlotFlashContent(
         if (isFlashScreen) {
             DataCard (stringResource(R.string.flash))
             Spacer(Modifier.height(5.dp))
-            FlashButton(stringResource(R.string.flash_ak3_zip), "zip" ,callback = { uri ->
-                viewModel.flashActionType = "flashAk3"
-                viewModel.flashActionURI = uri
-                viewModel.showConfirmDialog()
-            })
+            Box(modifier = Modifier.fillMaxWidth()) {
+                FlashButton(stringResource(R.string.kernel_zip), "zip" ,callback = { uri ->
+                    viewModel.flashActionType = "flashAk3"
+                    viewModel.flashActionURI = uri
+                    viewModel.showConfirmDialog()
+                })
+                // Small "AK3" tag in the top right corner. It has no click handler, so taps reach the button.
+                Text(
+                    "AK3",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 5.dp, end = 14.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             if (PartitionUtil.AvailablePartitions.contains("recovery")) {
                 FlashButton(stringResource(R.string.flash_recovery_img), "img" ,callback = { uri ->
                     viewModel.flashActionType = "flashImage"

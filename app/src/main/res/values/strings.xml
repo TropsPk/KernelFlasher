@@ -41,6 +41,7 @@
     <string name="updates">Updates</string>
     <string name="flash">Flash</string>
     <string name="flash_ak3_zip">Flash AK3 Zip</string>
+    <string name="kernel_zip">Kernel Zip</string>
     <string name="flash_partition_image">Flash Partition Image</string>
     <string name="flash_recovery_img">Flash Recovery Image</string>
     <string name="flash_recovery_zip">Flash Recovery Zip</string>
