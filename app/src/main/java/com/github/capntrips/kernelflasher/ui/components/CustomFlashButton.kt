@@ -51,7 +51,7 @@ private const val CUSTOM_FLASH_HELP =
     "How to use it\n" +
     "1. Tap Custom Partition and type the partition name without _a or _b. " +
     "The slot you are viewing is added for you.\n" +
-    "2. Under Flash to, the default is the current slot (the slot you opened). " +
+    "2. Under Flash to, Simple Flash is ticked by default. It flashes the current slot (the slot you opened). " +
     "You can also pick Partition A only, Partition B only, or Both A and B.\n" +
     "3. Recommended: turn on Back up this partition first.\n" +
     "4. Choose your .img file. It must be a raw image, not a sparse image.\n" +
@@ -135,7 +135,6 @@ fun CustomFlashButton(
         ) {
             Text("Custom Partition")
         }
-        HelpMark { showHelp = true }
     }
 
     picked.value?.let { pick ->
@@ -186,7 +185,7 @@ fun CustomFlashButton(
                         Text(currentError, color = MaterialTheme.colorScheme.error)
                     }
                     Text("Flash to", fontWeight = FontWeight.Bold)
-                    val currentLabel = if (isAb) "Current slot ($slotSuffix) - default" else "Current partition - default"
+                    val currentLabel = "Simple Flash"
                     val options = if (isAb) listOf(
                         CustomSlotTarget.CURRENT to currentLabel,
                         CustomSlotTarget.SLOT_A to "Partition A only",
