@@ -100,6 +100,11 @@ class SlotViewModel(
     var flashActionType: String = ""
     var flashActionURI: Uri? = null
     var flashActionPartName: String? = null
+    var flashActionDisplayName: String? = null
+    var flashActionBlockDevice: String? = null
+    var flashActionBackupFirst: Boolean = false
+    var flashActionExtraWarning: Boolean = false
+    var flashActionSuffixes: List<String> = emptyList()
 
     val sha1: String?
         get() = _sha1
@@ -827,6 +832,172 @@ class SlotViewModel(
                         showCautionDialog() // Show dialog instead of uiPrint
                     }
                 }
+                SharedViewModels.mainViewModel.markRefreshNeeded()
+            }
+        }
+    }
+
+    /**
+     * Custom partition flash, step 1: validate the typed name for every chosen slot and find
+     * the block devices. Shows the confirm dialog only when all of them are valid,
+     * otherwise shows the reason and nothing else happens.
+     */
+    fun prepareCustomFlash(
+        context: Context,
+        uri: Uri,
+        displayName: String,
+        rawName: String,
+        backupFirst: Boolean,
+        target: PartitionUtil.CustomSlotTarget
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val suffixes = when (target) {
+                PartitionUtil.CustomSlotTarget.CURRENT -> listOf(slotSuffix)
+                PartitionUtil.CustomSlotTarget.SLOT_A -> listOf("_a")
+                PartitionUtil.CustomSlotTarget.SLOT_B -> listOf("_b")
+                PartitionUtil.CustomSlotTarget.BOTH -> listOf("_a", "_b")
+            }
+            var rejection: String? = null
+            val devicePaths = LinkedHashMap<String, Boolean>()
+            try {
+                for (suffix in suffixes) {
+                    val result = PartitionUtil.resolveCustomPartition(rawName, suffix)
+                    if (result is PartitionUtil.CustomPartitionResult.Ok) {
+                        devicePaths[result.devicePath] = result.needsExtraWarning
+                    } else {
+                        rejection = (result as PartitionUtil.CustomPartitionResult.Rejected).reason
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                rejection = "Could not check the partition"
+            }
+            withContext(Dispatchers.Main) {
+                val reason = rejection
+                if (reason != null) {
+                    Toast.makeText(context, reason, Toast.LENGTH_LONG).show()
+                } else {
+                    flashActionType = "flashCustomImage"
+                    flashActionURI = uri
+                    flashActionPartName = rawName.trim()
+                    flashActionDisplayName = displayName
+                    flashActionBlockDevice = devicePaths.keys.joinToString("\n")
+                    flashActionBackupFirst = backupFirst
+                    flashActionExtraWarning = devicePaths.values.any { it }
+                    flashActionSuffixes = suffixes
+                    showConfirmDialog()
+                }
+            }
+        }
+    }
+
+    /**
+     * Custom partition flash, step 2: runs after the user confirmed.
+     * Every check and every backup for every target runs before anything is written.
+     * Targets are then flashed one at a time and each one is verified before the next starts.
+     */
+    fun flashCustomImage(
+        context: Context,
+        uri: Uri,
+        partitionName: String,
+        displayName: String,
+        backupFirst: Boolean,
+        suffixes: List<String>
+    ) {
+        launch {
+            _clearFlash()
+            flashUri = uri
+            flashFilename = "custom_flash.img"
+            try {
+                // Resolve every target again. Same partition found twice is flashed once.
+                val targets = LinkedHashMap<String, ExtendedFile>()
+                for (suffix in suffixes) {
+                    val resolved = PartitionUtil.resolveCustomPartition(partitionName, suffix)
+                    if (resolved !is PartitionUtil.CustomPartitionResult.Ok) {
+                        throw Exception((resolved as PartitionUtil.CustomPartitionResult.Rejected).reason)
+                    }
+                    targets.putIfAbsent(resolved.devicePath, resolved.blockDevice)
+                }
+                if (targets.isEmpty()) {
+                    throw Exception("No partition selected")
+                }
+
+                addMessage("Copying $displayName ...")
+                val temporaryFile = File(context.filesDir, "custom_flash.img")
+                val inputStream = context.contentResolver.openInputStream(uri)
+                    ?: throw Exception("Unable to open the selected file")
+                inputStream.use { input ->
+                    temporaryFile.outputStream().use { output -> input.copyTo(output) }
+                }
+                val imageSize = temporaryFile.length()
+                if (imageSize <= 0L) {
+                    throw Exception("The selected image is empty")
+                }
+                val magic = ByteArray(4)
+                val magicRead = temporaryFile.inputStream().use { it.read(magic) }
+                if (magicRead == 4 &&
+                    magic[0] == 0x3A.toByte() && magic[1] == 0xFF.toByte() &&
+                    magic[2] == 0x26.toByte() && magic[3] == 0xED.toByte()
+                ) {
+                    throw Exception("This is a sparse image. Convert it to a raw image first")
+                }
+
+                // Check every target before touching any of them.
+                val sizes = LinkedHashMap<String, Long>()
+                for ((path, device) in targets) {
+                    val partitionSize = PartitionUtil.blockDeviceSize(device)
+                        ?: throw Exception("Unable to read the size of ${device.name}")
+                    if (imageSize > partitionSize) {
+                        throw Exception("The image is larger than ${device.name}")
+                    }
+                    sizes[path] = partitionSize
+                    addMessage("Checks passed for ${device.name}. Image $imageSize bytes, partition $partitionSize bytes")
+                }
+
+                // Back up every target before touching any of them.
+                if (backupFirst) {
+                    for ((path, device) in targets) {
+                        addMessage("Backing up ${device.name} ...")
+                        val backupPath = PartitionUtil.backupBlockDevice(device, device.name, sizes[path]!!)
+                            ?: throw Exception("Backup of ${device.name} failed. Nothing was flashed")
+                        addMessage("Backup saved to $backupPath")
+                    }
+                }
+
+                _wasFlashSuccess.value = false
+                val image = fileSystemManager.getFile(context.filesDir, "custom_flash.img")
+                val flashedNames = mutableListOf<String>()
+                for ((_, device) in targets) {
+                    try {
+                        addMessage("Flashing $displayName to ${device.name} ...")
+                        val hash = PartitionUtil.flashBlockDevice(image, device, hashAlgorithm)
+                        val written = PartitionUtil.sha256OfBlockDevice(device, imageSize)
+                        if (written == null) {
+                            addMessage("Verification skipped. sha256sum is not available")
+                        } else if (written.equals(hash, ignoreCase = true)) {
+                            addMessage("Verified ${device.name}. Written data matches the image")
+                        } else {
+                            throw Exception("Verification of ${device.name} failed. Do not reboot")
+                        }
+                        flashedNames.add(device.name)
+                        addMessage("Flashed $displayName to ${device.name}")
+                    } catch (e: Exception) {
+                        if (flashedNames.isEmpty()) {
+                            throw e
+                        }
+                        throw Exception("${e.message}. Already flashed: ${flashedNames.joinToString(" and ")}")
+                    }
+                }
+
+                addMessage("Cleaning up ...")
+                clearTmp(context)
+                addMessage("Done.")
+                _wasFlashSuccess.value = true
+            } catch (e: Exception) {
+                clearFlash(context)
+                throw e
+            } finally {
+                addMessage("")
                 SharedViewModels.mainViewModel.markRefreshNeeded()
             }
         }

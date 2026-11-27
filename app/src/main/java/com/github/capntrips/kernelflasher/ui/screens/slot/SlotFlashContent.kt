@@ -48,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.github.capntrips.kernelflasher.R
 import com.github.capntrips.kernelflasher.common.PartitionUtil
+import com.github.capntrips.kernelflasher.ui.components.CustomFlashButton
 import com.github.capntrips.kernelflasher.ui.components.DataCard
 import com.github.capntrips.kernelflasher.ui.components.FlashButton
 import com.github.capntrips.kernelflasher.ui.components.FlashList
@@ -137,6 +138,9 @@ fun ColumnScope.SlotFlashContent(
                     viewModel.showConfirmDialog()
                 })
             }
+            CustomFlashButton(slotSuffix = slotSuffix, onPicked = { uri, displayName, customPartitionName, backupFirst, target ->
+                viewModel.prepareCustomFlash(context, uri, displayName, customPartitionName, backupFirst, target)
+            })
         } else if (isBackup) {
             DataCard (stringResource(R.string.backup))
             Spacer(Modifier.height(5.dp))
@@ -299,6 +303,13 @@ fun ColumnScope.SlotFlashContent(
                         Text("Destination: AnyKernel3 (Auto-detect)", fontWeight = FontWeight.Bold)
                     } else if (viewModel.flashActionType == "flashRecoveryZip") {
                         Text("Destination Partition: recovery (recovery.img from zip)", fontWeight = FontWeight.Bold)
+                    } else if (viewModel.flashActionType == "flashCustomImage") {
+                        Text("Destination Partition: ${viewModel.flashActionPartName}", fontWeight = FontWeight.Bold)
+                        Text("Block device:\n${viewModel.flashActionBlockDevice}")
+                        Text(if (viewModel.flashActionBackupFirst) "The current partition will be backed up first." else "No backup will be made.")
+                        if (viewModel.flashActionExtraWarning) {
+                            Text("This partition is sensitive. A wrong image can stop the phone from working.", fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             },
@@ -339,6 +350,20 @@ fun ColumnScope.SlotFlashContent(
                                     context,
                                     uri,
                                     partitionName!!
+                                )
+                            }
+
+                            "flashCustomImage" -> {
+                                navController.navigate("slot$slotSuffix/flash/image/flash") {
+                                    popUpTo("slot$slotSuffix")
+                                }
+                                viewModel.flashCustomImage(
+                                    context,
+                                    uri,
+                                    partitionName!!,
+                                    viewModel.flashActionDisplayName ?: "image.img",
+                                    viewModel.flashActionBackupFirst,
+                                    viewModel.flashActionSuffixes
                                 )
                             }
                         }

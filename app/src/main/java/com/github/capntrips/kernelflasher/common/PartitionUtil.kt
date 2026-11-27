@@ -168,4 +168,119 @@ object PartitionUtil {
             }
         }
     }
+
+    // ---------------------------------------------------------------------
+    // Custom partition flash
+    // Everything below is used only by the "Custom Partition" feature.
+    // Existing functions above are intentionally left unchanged.
+    // ---------------------------------------------------------------------
+
+    /** Which slot(s) a custom flash should write to. CURRENT = the slot of the screen being used. */
+    enum class CustomSlotTarget { CURRENT, SLOT_A, SLOT_B, BOTH }
+
+    sealed class CustomPartitionResult {
+        data class Ok(
+            val blockDevice: ExtendedFile,
+            val devicePath: String,
+            val needsExtraWarning: Boolean
+        ) : CustomPartitionResult()
+
+        data class Rejected(val reason: String) : CustomPartitionResult()
+    }
+
+    private val customNameRegex = Regex("^[A-Za-z0-9_]{1,40}$")
+
+    // Flashing these can hard brick the phone or wipe user data: always refused.
+    private val blockedPartitionNames = setOf(
+        "abl", "aop", "aop_config", "tz", "tzsc", "hyp", "keymaster", "km4", "devcfg",
+        "imagefv", "uefisecapp", "qupfw", "shrm", "cpucp", "multiimgoem", "multiimgqti",
+        "rpm", "pmic", "apdp", "cmnlib", "cmnlib64", "storsec", "bootloader", "ddr",
+        "userdata", "super", "metadata", "persist", "misc", "frp", "devinfo",
+        "modemst1", "modemst2", "fsg", "fsc", "ssd", "sec", "limits"
+    )
+    private val blockedPartitionPrefixes = listOf("xbl", "sbl", "gpt", "primarygpt", "backupgpt")
+
+    // Allowed, but the user gets an extra warning in the confirm dialog.
+    private val warnPartitionNames = setOf(
+        "modem", "dsp", "bluetooth", "cdt", "mdtp", "mdtpsecapp", "featenabler"
+    )
+
+    /**
+     * Checks a user typed partition name and finds its block device for [slotSuffix].
+     * Only real physical block devices are accepted (never logical/mapper partitions).
+     * Reasons are plain text without slashes so they are safe in navigation routes.
+     */
+    fun resolveCustomPartition(rawName: String, slotSuffix: String): CustomPartitionResult {
+        val name = rawName.trim()
+        if (name.isEmpty()) {
+            return CustomPartitionResult.Rejected("Type a partition name first")
+        }
+        if (!customNameRegex.matches(name)) {
+            return CustomPartitionResult.Rejected("Use only letters, numbers and underscore")
+        }
+        val lower = name.lowercase()
+        if (lower.endsWith("_a") || lower.endsWith("_b")) {
+            return CustomPartitionResult.Rejected("Do not type _a or _b. The slot is added automatically")
+        }
+        if (lower in blockedPartitionNames || blockedPartitionPrefixes.any { lower.startsWith(it) }) {
+            return CustomPartitionResult.Rejected("$name is protected and cannot be flashed here")
+        }
+        val manager = fileSystemManager
+            ?: return CustomPartitionResult.Rejected("Not ready yet. Try again")
+
+        val directories = listOfNotNull(
+            bootParent?.path,
+            "/dev/block/by-name",
+            "/dev/block/bootdevice/by-name"
+        ).distinct()
+
+        // Slotted name first. The plain name is used only if no slotted one exists anywhere,
+        // so an A/B partition can never end up on the wrong slot.
+        val candidates = if (slotSuffix.isNotEmpty()) listOf("$name$slotSuffix", name) else listOf(name)
+        for (candidate in candidates) {
+            for (directory in directories) {
+                val device = manager.getFile(directory, candidate)
+                if (device.exists() && Shell.cmd("test -b $directory/$candidate").exec().isSuccess) {
+                    return CustomPartitionResult.Ok(device, "$directory/$candidate", lower in warnPartitionNames)
+                }
+            }
+        }
+        return CustomPartitionResult.Rejected("Partition $name$slotSuffix was not found on this device")
+    }
+
+    /** Size of a block device in bytes, or null if it cannot be read. */
+    fun blockDeviceSize(blockDevice: ExtendedFile): Long? {
+        return Shell.cmd("wc -c < $blockDevice").exec().out.firstOrNull()?.trim()?.toLongOrNull()
+    }
+
+    /**
+     * Copies the whole partition to /sdcard/KernelFlasher/custom_backups.
+     * Returns the backup path, or null if the copy failed or is not the same size.
+     */
+    fun backupBlockDevice(blockDevice: ExtendedFile, label: String, expectedSize: Long): String? {
+        val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date())
+        val directory = "/sdcard/KernelFlasher/custom_backups"
+        val destination = "$directory/${label}_$timestamp.img"
+        if (!Shell.cmd("mkdir -p $directory").exec().isSuccess) {
+            return null
+        }
+        val copied = Shell.cmd("dd if=$blockDevice of=$destination bs=4096 && sync").exec().isSuccess
+        val size = Shell.cmd("wc -c < $destination").exec().out.firstOrNull()?.trim()?.toLongOrNull()
+        if (!copied || size != expectedSize) {
+            Shell.cmd("rm -f $destination").exec()
+            return null
+        }
+        return destination
+    }
+
+    /**
+     * SHA-256 of the first [length] bytes of a block device, or null when the
+     * device tools are unavailable (the caller then skips verification).
+     */
+    fun sha256OfBlockDevice(blockDevice: ExtendedFile, length: Long): String? {
+        Shell.cmd("sync").exec()
+        val line = Shell.cmd("head -c $length $blockDevice | sha256sum").exec().out.firstOrNull() ?: return null
+        val hash = line.trim().split(Regex("\\s+")).firstOrNull() ?: return null
+        return if (Regex("^[0-9a-fA-F]{64}$").matches(hash)) hash.lowercase() else null
+    }
 }
