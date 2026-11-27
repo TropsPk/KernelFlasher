@@ -196,9 +196,12 @@ object PartitionUtil {
         "imagefv", "uefisecapp", "qupfw", "shrm", "cpucp", "multiimgoem", "multiimgqti",
         "rpm", "pmic", "apdp", "cmnlib", "cmnlib64", "storsec", "bootloader", "ddr",
         "userdata", "super", "metadata", "persist", "misc", "frp", "devinfo",
-        "modemst1", "modemst2", "fsg", "fsc", "ssd", "sec", "limits"
+        "modemst1", "modemst2", "fsg", "fsc", "ssd", "sec", "limits",
+        // OnePlus device-unique calibration, modem NV backups and secure data
+        "mdm1oemnvbktmp", "mdm_oem_stanvbk", "mdm_oem_dycnvbk", "oem_stanvbk", "oem_dycnvbk",
+        "oplusstanvbk", "oplusdycnvbk", "param", "keystore", "secdata", "spunvm", "uefivarstore"
     )
-    private val blockedPartitionPrefixes = listOf("xbl", "sbl", "gpt", "primarygpt", "backupgpt")
+    private val blockedPartitionPrefixes = listOf("xbl", "sbl", "gpt", "primarygpt", "backupgpt", "mdm1m9kefs")
 
     // Allowed, but the user gets an extra warning in the confirm dialog.
     private val warnPartitionNames = setOf(
@@ -278,7 +281,8 @@ object PartitionUtil {
      * device tools are unavailable (the caller then skips verification).
      */
     fun sha256OfBlockDevice(blockDevice: ExtendedFile, length: Long): String? {
-        Shell.cmd("sync").exec()
+        // Best effort: flush and drop the page cache so the read-back comes from storage rather than RAM.
+        Shell.cmd("sync", "echo 3 > /proc/sys/vm/drop_caches").exec()
         val line = Shell.cmd("head -c $length $blockDevice | sha256sum").exec().out.firstOrNull() ?: return null
         val hash = line.trim().split(Regex("\\s+")).firstOrNull() ?: return null
         return if (Regex("^[0-9a-fA-F]{64}$").matches(hash)) hash.lowercase() else null

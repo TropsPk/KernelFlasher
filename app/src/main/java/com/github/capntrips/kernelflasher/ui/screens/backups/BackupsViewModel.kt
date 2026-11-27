@@ -2,6 +2,7 @@ package com.github.capntrips.kernelflasher.ui.screens.backups
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
@@ -113,7 +114,7 @@ class BackupsViewModel(
             } catch (e: Exception) {
                 withContext (Dispatchers.Main) {
                     Log.e(TAG, e.message, e)
-                    navController.navigate("error/${e.message}") {
+                    navController.navigate("error/${Uri.encode(e.message ?: "Unknown error")}") {
                         popUpTo("main")
                     }
                 }

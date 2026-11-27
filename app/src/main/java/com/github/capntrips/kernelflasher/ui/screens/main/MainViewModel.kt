@@ -151,7 +151,7 @@ class MainViewModel(
             } catch (e: Exception) {
                 withContext (Dispatchers.Main) {
                     Log.e(TAG, e.message, e)
-                    navController.navigate("error/${e.message}") {
+                    navController.navigate("error/${Uri.encode(e.message ?: "Unknown error")}") {
                         popUpTo("main")
                     }
                 }

@@ -37,7 +37,8 @@ jobs:
 
       - name: Get Latest Tag
         run: |
-          latest_tag=$(git describe --tags --abbrev=0)
+          # With no tags yet, start from the version in app/build.gradle.kts
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || sed -n 's/.*versionName = "\([^"]*\)".*/v\1/p' app/build.gradle.kts)
           echo "LATEST_TAG=${latest_tag}" >> $GITHUB_ENV
 
       - name: Generate Version
@@ -68,6 +69,12 @@ jobs:
           # Calculate the version code (e.g., 1.0.5 -> 10005)
           version_code=$((new_major * 10000 + new_minor * 100 + new_patch))
           
+          # Never overwrite an already published release (drafts have no tag yet, so they can be re-run)
+          if git rev-parse -q --verify "refs/tags/v${new_version}" >/dev/null; then
+            echo "::error::Tag v${new_version} already exists. Increase the version."
+            exit 1
+          fi
+
           # Set environment variables
           echo "NEW_VERSION_NAME=${new_version}" >> $GITHUB_ENV
           echo "NEW_VERSION_CODE=${version_code}" >> $GITHUB_ENV
@@ -75,8 +82,8 @@ jobs:
       - name: Update build.gradle.kts with new version code and version name
         run: |
           # Update versionCode and versionName in build.gradle
-          sed -i "s/versionCode [0-9]\+/versionCode ${NEW_VERSION_CODE}/" app/build.gradle.kts
-          sed -i "s/versionName \"[^\"]*\"/versionName \"${NEW_VERSION_NAME}\"/" app/build.gradle.kts
+          sed -i "s/versionCode = [0-9]\+/versionCode = ${NEW_VERSION_CODE}/" app/build.gradle.kts
+          sed -i "s/versionName = \"[^\"]*\"/versionName = \"${NEW_VERSION_NAME}\"/" app/build.gradle.kts
 
       - name: Print Version
         run: |
@@ -120,7 +127,7 @@ jobs:
           git add app/build.gradle.kts
           
           # Commit the changes
-          git commit -m "Update versionName and versionCode to ${NEW_VERSION_NAME} and ${NEW_VERSION_CODE}"
+          git diff --cached --quiet || git commit -m "Update versionName and versionCode to ${NEW_VERSION_NAME} and ${NEW_VERSION_CODE}"
           
           # Push changes to the current branch
           git push https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${GITHUB_REF#refs/heads/}

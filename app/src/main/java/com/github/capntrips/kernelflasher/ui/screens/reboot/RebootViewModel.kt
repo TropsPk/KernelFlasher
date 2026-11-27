@@ -1,6 +1,7 @@
 package com.github.capntrips.kernelflasher.ui.screens.reboot
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
@@ -33,7 +34,7 @@ class RebootViewModel(
             } catch (e: Exception) {
                 withContext (Dispatchers.Main) {
                     Log.e(TAG, e.message, e)
-                    navController.navigate("error/${e.message}") {
+                    navController.navigate("error/${Uri.encode(e.message ?: "Unknown error")}") {
                         popUpTo("main")
                     }
                 }

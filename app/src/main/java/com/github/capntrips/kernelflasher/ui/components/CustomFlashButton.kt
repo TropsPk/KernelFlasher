@@ -5,6 +5,7 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,10 +38,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import com.github.capntrips.kernelflasher.MainActivity
 import com.github.capntrips.kernelflasher.common.PartitionUtil.CustomSlotTarget
 import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
+import kotlinx.serialization.ExperimentalSerializationApi
 
 private const val CUSTOM_FLASH_HELP =
     "What it does\n" +
@@ -86,7 +90,13 @@ private fun HelpMark(onClick: () -> Unit) {
  * Asks for a partition name, then opens the file picker, then calls [onPicked].
  * The caller is responsible for validating the partition and confirming with the user.
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalAnimationApi::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalUnitApi::class,
+    ExperimentalSerializationApi::class
+)
 @Composable
 fun CustomFlashButton(
     slotSuffix: String,
@@ -130,6 +140,8 @@ fun CustomFlashButton(
 
     picked.value?.let { pick ->
         val uri = pick.second
+        // Use each pick once, so an old file is never reused for a new partition.
+        picked.value = null
         if (mainActivity.isAwaitingResult) {
             val fileName = mainActivity.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
                 val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)

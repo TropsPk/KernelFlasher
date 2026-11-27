@@ -55,6 +55,8 @@ fun FlashButton(
         Text(buttonText)
     }
     result.value?.let {uri ->
+        // Use each pick once, so an old file is never reused and the same file can be picked again.
+        result.value = null
         if (mainActivity.isAwaitingResult) {
             val contentResolver = mainActivity.contentResolver
             val fileName = contentResolver.query(uri, null, null, null, null)?.use { cursor ->
