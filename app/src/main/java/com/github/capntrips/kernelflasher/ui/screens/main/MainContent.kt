@@ -50,12 +50,12 @@ fun ColumnScope.MainContent(
         if(viewModel.susfsVersion != "v0.0.0" && viewModel.susfsVersion != "Invalid")
             DataRow(stringResource(R.string.susfs_version), viewModel.susfsVersion, mutableMaxWidth = cardWidth)
 
-        if(viewModel.halInfo != "")
+        if (viewModel.isAb && viewModel.halInfo != "")
             DataRow("Boot HAL version", viewModel.halInfo, mutableMaxWidth = cardWidth)
     }
     Spacer(Modifier.height(16.dp))
     SlotCard(
-        title = stringResource(if (viewModel.isAb) R.string.slot_a else R.string.slot),
+        title = stringResource(if (viewModel.isAb) R.string.slot_a else R.string.partition_info),
         viewModel = viewModel.slotA,
         navController = navController
     )

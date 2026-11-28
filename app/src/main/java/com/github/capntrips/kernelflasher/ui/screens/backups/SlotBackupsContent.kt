@@ -1,5 +1,6 @@
 package com.github.capntrips.kernelflasher.ui.screens.backups
 
+import com.github.capntrips.kernelflasher.ui.components.slotTitleRes
 import com.github.capntrips.kernelflasher.ui.components.TropsiButton
 
 import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
@@ -64,7 +65,7 @@ fun ColumnScope.SlotBackupsContent(
 
     if (!currentRoute.contains("/backups/{backupId}/restore")) {
         SlotCard(
-            title = stringResource(if (slotSuffix == "_a") R.string.slot_a else if (slotSuffix == "_b") R.string.slot_b else R.string.slot),
+            title = stringResource(slotTitleRes(slotSuffix)),
             viewModel = slotViewModel,
             navController = navController,
             isSlotScreen = true,

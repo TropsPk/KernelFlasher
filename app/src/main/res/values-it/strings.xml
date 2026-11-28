@@ -9,6 +9,7 @@
     <string name="kernel_version">Versione kernel</string>
     <string name="slot_suffix">Suffisso slot</string>
     <string name="slot" tools:ignore="MissingTranslation">Slot</string>
+    <string name="partition_info">Info partizioni</string>
     <string name="slot_a">Slot A</string>
     <string name="slot_b">Slot B</string>
     <string name="boot_sha1" tools:ignore="Typos">Boot SHA1</string>

@@ -9,6 +9,7 @@
     <string name="kernel_version">Версия ядра</string>
     <string name="slot_suffix">Slot Suffix</string>
     <string name="slot">Слот</string>
+    <string name="partition_info">Информация о разделах</string>
     <string name="slot_a">Слот A</string>
     <string name="slot_b">Слот B</string>
     <string name="boot_sha1" tools:ignore="Typos">Boot SHA1</string>

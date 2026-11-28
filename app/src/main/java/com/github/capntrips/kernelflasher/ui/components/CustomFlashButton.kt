@@ -45,27 +45,6 @@ import com.github.capntrips.kernelflasher.common.PartitionUtil.CustomSlotTarget
 import com.github.capntrips.kernelflasher.ui.theme.TropsiShape
 import kotlinx.serialization.ExperimentalSerializationApi
 
-private const val CUSTOM_FLASH_HELP =
-    "What it does\n" +
-    "Flashes any .img file to a partition that is not in the normal list, for example dtb or logo.\n\n" +
-    "How to use it\n" +
-    "1. Tap Custom Partition and type the partition name without _a or _b. " +
-    "The slot you are viewing is added for you.\n" +
-    "2. Under Flash to, Simple Flash is ticked by default. It flashes the current slot (the slot you opened). " +
-    "You can also pick Partition A only, Partition B only, or Both A and B.\n" +
-    "3. Recommended: turn on Back up this partition first.\n" +
-    "4. Choose your .img file. It must be a raw image, not a sparse image.\n" +
-    "5. Read the confirm screen. It shows the exact partitions. If anything looks wrong, cancel.\n" +
-    "6. After flashing, check the log. It says Verified when the written data matches your image.\n\n" +
-    "Both A and B\n" +
-    "All checks and backups run first. Then A is flashed and verified, then B. " +
-    "If A fails, B is not touched.\n\n" +
-    "Safety\n" +
-    "- The wrong image on the wrong partition can stop the phone from booting.\n" +
-    "- Protected partitions such as xbl, abl, tz, hyp, persist, userdata and super are blocked.\n" +
-    "- Only real partitions are accepted. Logical partitions such as system and vendor are not supported here.\n" +
-    "- Backups are saved in /sdcard/KernelFlasher/custom_backups."
-
 /** Small round "?" mark. Opens the help dialog when tapped. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -167,7 +146,7 @@ fun CustomFlashButton(
             },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Type the partition name without _a or _b. Example: dtb")
+                    Text(customFlashNameHint(isAb))
                     OutlinedTextField(
                         value = partitionName,
                         onValueChange = { input ->
@@ -184,24 +163,27 @@ fun CustomFlashButton(
                     if (currentError != null) {
                         Text(currentError, color = MaterialTheme.colorScheme.error)
                     }
-                    Text("Flash to", fontWeight = FontWeight.Bold)
-                    val currentLabel = "Simple Flash"
-                    val options = if (isAb) listOf(
-                        CustomSlotTarget.CURRENT to currentLabel,
-                        CustomSlotTarget.SLOT_A to "Partition A only",
-                        CustomSlotTarget.SLOT_B to "Partition B only",
-                        CustomSlotTarget.BOTH to "Both A and B"
-                    ) else listOf(CustomSlotTarget.CURRENT to currentLabel)
-                    for ((option, label) in options) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { target = option },
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Checkbox(checked = target == option, onCheckedChange = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(label)
+                    // Slot choice only exists on A/B phones. Phones without slots do not see it.
+                    if (isAb) {
+                        Text("Flash to", fontWeight = FontWeight.Bold)
+                        val currentLabel = "Simple Flash"
+                        val options = listOf(
+                            CustomSlotTarget.CURRENT to currentLabel,
+                            CustomSlotTarget.SLOT_A to "Partition A only",
+                            CustomSlotTarget.SLOT_B to "Partition B only",
+                            CustomSlotTarget.BOTH to "Both A and B"
+                        )
+                        for ((option, label) in options) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { target = option },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(checked = target == option, onCheckedChange = null)
+                                Spacer(Modifier.width(8.dp))
+                                Text(label)
+                            }
                         }
                     }
                     Row(
@@ -241,7 +223,7 @@ fun CustomFlashButton(
             title = { Text("Custom Partition Flash") },
             text = {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
-                    Text(CUSTOM_FLASH_HELP)
+                    Text(customFlashHelp(isAb))
                 }
             },
             confirmButton = {

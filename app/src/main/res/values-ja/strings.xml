@@ -10,6 +10,7 @@
   <string name="kernel_version">カーネルバージョン</string>
   <string name="slot_suffix">スロットの接頭辞</string>
   <string name="slot">スロット</string>
+  <string name="partition_info">パーティション情報</string>
   <string name="slot_a">スロット A</string>
   <string name="slot_b">スロット B</string>
   <string name="boot_sha1" tools:ignore="Typos">Boot SHA1</string>

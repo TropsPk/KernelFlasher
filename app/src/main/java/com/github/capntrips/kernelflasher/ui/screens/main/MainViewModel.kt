@@ -99,7 +99,7 @@ class MainViewModel(
         susfsVersion = runCatching { Shell.cmd("susfsd version").exec().out[0] }
             .recoverCatching { Shell.cmd("ksu_susfs show version").exec().out[0] }
             .getOrDefault("v0.0.0")
-        slotSuffix = Shell.cmd("getprop ro.boot.slot_suffix").exec().out[0]
+        slotSuffix = Shell.cmd("getprop ro.boot.slot_suffix").exec().out.firstOrNull()?.trim() ?: ""
         backups = BackupsViewModel(context, fileSystemManager, navController, _isRefreshing, _backups)
         updates = UpdatesViewModel(context, fileSystemManager, navController, _isRefreshing)
         reboot = RebootViewModel(context, fileSystemManager, navController, _isRefreshing)
@@ -113,7 +113,9 @@ class MainViewModel(
             slotA = SlotViewModel(context, fileSystemManager, navController, _isRefreshing, slotSuffix == "_a", "_a", bootA, initBootA, _backups)
             slotB = SlotViewModel(context, fileSystemManager, navController, _isRefreshing, slotSuffix == "_b", "_b", bootB, initBootB, _backups)
         } else {
-            val boot = PartitionUtil.findPartitionBlockDevice(context, "boot", "")!!
+            // If boot cannot be found the app still opens and the card shows "Not found" instead of crashing.
+            val boot = PartitionUtil.findPartitionBlockDevice(context, "boot", "")
+                ?: fileSystemManager.getFile("/dev/block/by-name/boot")
             val initBoot = PartitionUtil.findPartitionBlockDevice(context, "init_boot", "")
             slotA = SlotViewModel(context, fileSystemManager, navController, _isRefreshing, true, "", boot, initBoot, _backups)
             if (slotA.hasError) {

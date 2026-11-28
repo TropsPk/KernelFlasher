@@ -35,7 +35,7 @@ object PartitionUtil {
         if (fstabEntry != null) {
             bootParent = File(fstabEntry.blkDevice).parentFile
         }
-        val activeSlotSuffix = Shell.cmd("getprop ro.boot.slot_suffix").exec().out[0]
+        val activeSlotSuffix = Shell.cmd("getprop ro.boot.slot_suffix").exec().out.firstOrNull()?.trim() ?: ""
         for (partitionName in PartitionNames) {
             val blockDevice = findPartitionBlockDevice(context, partitionName, activeSlotSuffix)
             if (blockDevice != null && blockDevice.exists()) {
@@ -84,7 +84,43 @@ object PartitionUtil {
                 blockDevice = logicalDevice
             }
         }
+        // Extra fallback. Runs only when nothing above found an existing device, so phones
+        // that already work behave exactly as before. Phones without A/B slots often have no
+        // fstab entry for boot, so the folders below are the only way to find their partitions.
+        if (blockDevice == null || !blockDevice.exists()) {
+            val found = findInByNameDirectories("$partitionName$slotSuffix")
+            if (found != null) {
+                blockDevice = found
+            }
+        }
         return blockDevice
+    }
+
+    // Folders that can hold the partition name links. Where they live depends on the phone.
+    private val platformByNameDirectories: List<String> by lazy {
+        try {
+            Shell.cmd("ls -d /dev/block/platform/*/by-name /dev/block/platform/*/*/by-name 2>/dev/null").exec().out
+                .map { it.trim() }
+                .filter { Regex("^/dev/block/platform/[A-Za-z0-9_./-]+/by-name$").matches(it) }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun byNameDirectories(): List<String> {
+        return (listOfNotNull(bootParent?.path, "/dev/block/by-name", "/dev/block/bootdevice/by-name") +
+                platformByNameDirectories).distinct()
+    }
+
+    private fun findInByNameDirectories(name: String): ExtendedFile? {
+        val manager = fileSystemManager ?: return null
+        for (directory in byNameDirectories()) {
+            val device = manager.getFile(directory, name)
+            if (device.exists()) {
+                return device
+            }
+        }
+        return null
     }
 
     @Suppress("unused")
@@ -223,7 +259,10 @@ object PartitionUtil {
         }
         val lower = name.lowercase()
         if (lower.endsWith("_a") || lower.endsWith("_b")) {
-            return CustomPartitionResult.Rejected("Do not type _a or _b. The slot is added automatically")
+            return CustomPartitionResult.Rejected(
+                if (slotSuffix.isEmpty()) "Names ending in _a or _b are not supported here"
+                else "Do not type _a or _b. The slot is added automatically"
+            )
         }
         if (lower in blockedPartitionNames || blockedPartitionPrefixes.any { lower.startsWith(it) }) {
             return CustomPartitionResult.Rejected("$name is protected and cannot be flashed here")
@@ -231,11 +270,7 @@ object PartitionUtil {
         val manager = fileSystemManager
             ?: return CustomPartitionResult.Rejected("Not ready yet. Try again")
 
-        val directories = listOfNotNull(
-            bootParent?.path,
-            "/dev/block/by-name",
-            "/dev/block/bootdevice/by-name"
-        ).distinct()
+        val directories = byNameDirectories()
 
         // Slotted name first. The plain name is used only if no slotted one exists anywhere,
         // so an A/B partition can never end up on the wrong slot.
