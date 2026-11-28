@@ -1,11 +1,9 @@
 <h1 align="center">⚡ Tropsi Flasher</h1>
 
-<p align="center">
-  <b>Android Kernel Flasher</b> &nbsp;·&nbsp; <i>Flash. Manage. Control.</i>
-</p>
+<h3 align="center">Android Kernel Flasher &nbsp;·&nbsp; <i>Flash. Manage. Control.</i></h3>
 
 <p align="center">
-  <b>Tropsi Flasher</b> is a root-based <b>Android kernel flasher</b> app for flashing compatible <b>AnyKernel3 (AK3) kernel ZIPs</b>, recovery ZIPs, and partition images. It brings common flashing and kernel-maintenance tasks into one application.
+  <b>Tropsi Flasher</b> is a root-based <b>Android kernel flasher</b> app for flashing compatible <a href="https://github.com/osm0sis/AnyKernel3"><b>AnyKernel3 (AK3) kernel ZIPs</b></a>, recovery ZIPs, and partition images. It brings common flashing and kernel-maintenance tasks into one application.
 </p>
 
 <p align="center">
@@ -14,7 +12,7 @@
   <a href="LICENSE"><img alt="License: see LICENSE" src="https://img.shields.io/badge/License-See_LICENSE-2563EB?style=flat-square&labelColor=0B0B0F" /></a>
 </p>
 
-## 🚀 Features
+## 🚀 Tropsi Flasher features
 
 - 🔍 &nbsp;View device slot information
 - ⚡ &nbsp;Flash compatible kernel and recovery ZIP packages, including AnyKernel3 (AK3)
@@ -34,9 +32,9 @@
 | **Developer** | TropsPk |
 | **Platform** | Android |
 | **Requirements** | Root access · Android 10+ (API 29) |
-| **Repository** | `TropsPk/KernelFlasher` |
+| **Repository** | [`TropsPk/TropsiFlasher`](https://github.com/TropsPk/TropsiFlasher) |
 
-## 💬 Support
+## 💬 Support and bug reports
 
 Found a bug or need help? [Open an issue](https://github.com/TropsPk/TropsiFlasher/issues) and include your device, ROM or kernel, the steps you took, and the `dmesg` and `logcat` logs saved from the app.
 
@@ -44,7 +42,7 @@ If you find Tropsi Flasher useful, a ⭐ on the repository is appreciated.
 
 ## 📜 Credits and license
 
-This project is based on the **Kernel Flasher** codebase. Preserve original copyright notices and follow the license included in this repository.
+This project is based on the **[Kernel Flasher](https://github.com/capntrips/KernelFlasher)** codebase. Preserve original copyright notices and follow the license included in this repository.
 
 See [`LICENSE`](LICENSE) for the applicable terms.
 
