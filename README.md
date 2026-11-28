@@ -34,16 +34,16 @@
 | **Requirements** | Root access · Android 10+ (API 29) |
 | **Repository** | [`TropsPk/TropsiFlasher`](https://github.com/TropsPk/TropsiFlasher) |
 
-## 💬 Support and bug reports
+## 💖 Support my work
 
-Found a bug or need help? [Open an issue](https://github.com/TropsPk/TropsiFlasher/issues) and include your device, ROM or kernel, the steps you took, and the `dmesg` and `logcat` logs saved from the app.
+If you like what I build, you can support me.
 
-If you find Tropsi Flasher useful, a ⭐ on the repository is appreciated.
+![USDT TRC20](https://img.shields.io/badge/USDT-TRC20-26A17B?style=flat-square&logo=tether&logoColor=white)
 
-## 📜 Credits and license
+```
+TTL3HHUeyfDTXZ5RFqDr4Q379f8DXUJtjb
+```
 
-This project is based on the **[Kernel Flasher](https://github.com/capntrips/KernelFlasher)** codebase. Preserve original copyright notices and follow the license included in this repository.
-
-See [`LICENSE`](LICENSE) for the applicable terms.
+⚠️ **TRC20 network only**
 
 <p align="center"><sub>Part of the TropsPk development ecosystem.</sub></p>
