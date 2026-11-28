@@ -40,18 +40,17 @@ jobs:
             exit 1
           fi
 
-      - uses: r0adkll/sign-android-release@v1.0.4
-        name: Sign app APK
+      - name: Sign app APK
         if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
+          RELEASE_DIR: app/build/outputs/apk/release
+          SIGNING_KEY_BASE64: ${{ secrets.KEYSTORE }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           BUILD_TOOLS_VERSION: "35.0.0"
+        run: bash .github/scripts/sign-apk.sh
 
       - name: Rename APK
         if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push' || github.event_name == 'workflow_dispatch'

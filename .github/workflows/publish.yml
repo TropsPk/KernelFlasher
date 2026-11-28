@@ -105,17 +105,16 @@ jobs:
           ./gradlew assembleRelease
           tree app/build/outputs/apk/release
 
-      - uses: qlenlen/sign-android-release@v2.0.1
-        name: Sign app APK
+      - name: Sign app APK
         id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
+          RELEASE_DIR: app/build/outputs/apk/release
+          SIGNING_KEY_BASE64: ${{ secrets.KEYSTORE }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           BUILD_TOOLS_VERSION: "35.0.0"
+        run: bash .github/scripts/sign-apk.sh
 
       - name: Commit the changes
         run: |
@@ -145,7 +144,7 @@ jobs:
           path: KernelFlasher_${{ env.NEW_VERSION_NAME }}.apk
 
       - name: Upload release
-        uses: ncipollo/release-action@v1.14.0
+        uses: ncipollo/release-action@v1.21.0
         with:
           allowUpdates: true
           removeArtifacts: true
